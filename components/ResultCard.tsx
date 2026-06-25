@@ -88,7 +88,7 @@ const ResultCard = forwardRef<
               className="text-[10px] uppercase tracking-wider text-white/40"
               style={{ fontFamily: "var(--font-geist-mono), monospace" }}
             >
-              accuracy {result.confidence.toFixed(1)}%
+              conf {result.confidence.toFixed(1)}%
             </div>
           </div>
         </div>
