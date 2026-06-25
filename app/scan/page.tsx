@@ -1,0 +1,79 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import ScannerView from "@/components/ScannerView";
+import { isUnlocked, saveResult } from "@/lib/store";
+import { BRAND, ENGINE } from "@/lib/copy";
+import type { AnalysisResult } from "@/lib/analysis";
+
+export default function ScanPage() {
+  const router = useRouter();
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!isUnlocked()) {
+      router.replace("/");
+      return;
+    }
+    setReady(true);
+  }, [router]);
+
+  function handleComplete(result: AnalysisResult, shot: string | null) {
+    saveResult(result, shot);
+    router.push("/results");
+  }
+
+  if (!ready) return null;
+
+  return (
+    <main className="relative flex min-h-dvh flex-col bg-night text-white">
+      <div
+        aria-hidden
+        className="grid-bg pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(120%_80%_at_50%_30%,black,transparent_75%)]"
+      />
+      <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10">
+        <div className="flex items-center gap-2.5">
+          <span className="mesh-bg h-5 w-5 rounded-[6px]" />
+          <span className="text-[15px] font-semibold tracking-tight">
+            {BRAND}
+          </span>
+        </div>
+        <span className="eyebrow !text-white/45">{ENGINE}</span>
+      </header>
+
+      <section className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 pb-16 sm:px-10">
+        <p className="eyebrow !text-white/45 animate-rise">Step 2 of 3 · Scanning</p>
+        <h1 className="display animate-rise mt-3 text-[clamp(1.9rem,6vw,2.6rem)] text-white">
+          Hold still. You are
+          <br />
+          being <span className="mesh-text">classified.</span>
+        </h1>
+        <p
+          className="animate-rise mt-4 text-[15px] leading-relaxed text-white/55"
+          style={{ animationDelay: "80ms" }}
+        >
+          Center your face in the reticle. Analysis runs entirely on your
+          device — no frames are uploaded. Looking away will not help.
+        </p>
+
+        <div className="mt-8">
+          <ScannerView onComplete={handleComplete} />
+        </div>
+
+        <div className="animate-rise mt-6 flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/memes/gay-fear.jpg"
+            alt=""
+            className="h-10 w-10 shrink-0 rounded object-cover"
+          />
+          <p className="mono text-[11px] leading-snug text-white/45">
+            Typical subject response during classification. Entirely normal.
+            The result will not change.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
