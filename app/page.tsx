@@ -108,7 +108,7 @@ export default function GatePage() {
                 autoCapitalize="off"
                 spellCheck={false}
                 placeholder="GAYDAR-7"
-                className="mono h-12 flex-1 rounded-md border border-hairline bg-panel px-4 text-[15px] tracking-tight text-ink outline-none transition placeholder:text-mute focus:border-accent focus:ring-4 focus:ring-accent/15 disabled:opacity-60"
+                className="mono h-12 w-full sm:flex-1 rounded-md border border-hairline bg-panel px-4 text-[15px] tracking-tight text-ink outline-none transition placeholder:text-mute focus:border-accent focus:ring-4 focus:ring-accent/15 disabled:opacity-60"
               />
               <button
                 type="submit"
