@@ -2,7 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import ScanOverlay from "./ScanOverlay";
-import { SCAN_STATUS, CAMERA_DENIED, MODEL_VERSION } from "@/lib/copy";
+import {
+  SCAN_STATUS,
+  CAMERA_DENIED,
+  MODEL_VERSION,
+  SCAN_START_PROMPT,
+  SCAN_START_BUTTON,
+} from "@/lib/copy";
 import {
   generateResult,
   extractFeatures,
@@ -12,7 +18,7 @@ import {
   type FaceFeatures,
 } from "@/lib/analysis";
 
-type Phase = "requesting" | "scanning" | "denied" | "done";
+type Phase = "idle" | "requesting" | "scanning" | "denied" | "done";
 
 const SCAN_MS = 5600;
 
@@ -26,8 +32,9 @@ export default function ScannerView({
   const rafRef = useRef<number>(0);
   const startRef = useRef<number>(0);
   const finishedRef = useRef(false);
+  const cancelledRef = useRef(false);
 
-  const [phase, setPhase] = useState<Phase>("requesting");
+  const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
 
   const stopCamera = useCallback(() => {
@@ -106,37 +113,40 @@ export default function ScannerView({
     rafRef.current = requestAnimationFrame(tick);
   }, [tick]);
 
-  // Ask for the camera on mount.
-  useEffect(() => {
-    let cancelled = false;
-    async function init() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user", width: { ideal: 1280 } },
-          audio: false,
-        });
-        if (cancelled) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play().catch(() => {});
-        }
-        beginScan();
-      } catch {
-        if (!cancelled) setPhase("denied");
+  // Detection is manual: the user clicks "Start detection", which asks for the
+  // camera and then kicks off the scan. Nothing runs (not even the permission
+  // prompt) until this fires.
+  const startDetection = useCallback(async () => {
+    setPhase("requesting");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 1280 } },
+        audio: false,
+      });
+      if (cancelledRef.current) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
       }
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play().catch(() => {});
+      }
+      beginScan();
+    } catch {
+      if (!cancelledRef.current) setPhase("denied");
     }
-    init();
+  }, [beginScan]);
+
+  // Tear down the camera and any running rAF loop on unmount.
+  useEffect(() => {
+    cancelledRef.current = false;
     return () => {
-      cancelled = true;
+      cancelledRef.current = true;
       cancelAnimationFrame(rafRef.current);
       stopCamera();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [stopCamera]);
 
   // "Proceed anyway" after a denial: run a blind scan, then finish.
   const proceedBlind = useCallback(() => {
@@ -169,6 +179,20 @@ export default function ScannerView({
 
         {(phase === "scanning" || phase === "requesting") && (
           <ScanOverlay active={phase === "scanning"} />
+        )}
+
+        {phase === "idle" && (
+          <Centered>
+            <p className="max-w-[80%] text-center text-[14px] leading-relaxed text-white/90">
+              {SCAN_START_PROMPT}
+            </p>
+            <button
+              onClick={startDetection}
+              className="mt-5 inline-flex h-10 items-center rounded-pill bg-white px-5 text-[14px] font-medium text-ink transition hover:bg-white/90"
+            >
+              {SCAN_START_BUTTON}
+            </button>
+          </Centered>
         )}
 
         {phase === "requesting" && (
@@ -229,6 +253,8 @@ export default function ScannerView({
             <>
               <span className="text-ink">›</span> {statusLine}
             </>
+          ) : phase === "idle" ? (
+            "Awaiting initiation…"
           ) : phase === "requesting" ? (
             "Standing by for camera…"
           ) : (

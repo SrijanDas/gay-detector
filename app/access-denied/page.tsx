@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MeshBackdrop from "@/components/MeshBackdrop";
+import { unlock } from "@/lib/store";
 import {
   BRAND,
   ENGINE,
@@ -15,7 +16,8 @@ export default function AccessDeniedPage() {
   const router = useRouter();
 
   function tryAgain() {
-    router.push("/");
+    unlock();
+    router.push("/scan");
   }
 
   return (

@@ -99,6 +99,10 @@ export const ACCESS_CODE = "GAYDAR-7";
 // Shown for a beat when the correct code is entered, just before the scanner.
 export const ACCESS_GRANTED = "Access code accepted. Detection bay is ready.";
 
+// Idle scanner state — detection is manual; the subject must opt in.
+export const SCAN_START_PROMPT = "Position your face in frame, then begin.";
+export const SCAN_START_BUTTON = "Start detection";
+
 // Wrong code → bounced to /access-denied.
 export const DENIAL_TAUNT = "You thought you could get in?";
 export const DENIAL_PUNCHLINE = "Now go back to doing your gay shit.";
