@@ -47,14 +47,23 @@ export default function ScanPage() {
       </header>
 
       <section className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 pb-8 sm:px-10 sm:pb-16">
-        <p className="eyebrow !text-white/45 animate-rise">Step 2 of 3 · Scanning</p>
-        <h1 className="display animate-rise mt-3 text-[clamp(1.9rem,6vw,2.6rem)] text-white">
+        {/* mobile: instruction doubles as the title */}
+        <h1 className="display animate-rise text-[clamp(1.5rem,7vw,2rem)] text-white sm:hidden">
+          Center your face in the reticle — analysis runs{" "}
+          <span className="mesh-text">on-device.</span>
+        </h1>
+
+        {/* desktop: full title + description */}
+        <p className="eyebrow text-white/45! animate-rise hidden sm:block">
+          Step 2 of 3 · Scanning
+        </p>
+        <h1 className="display animate-rise mt-3 text-[clamp(1.9rem,6vw,2.6rem)] text-white hidden sm:block">
           Hold still. You are
           <br />
           being <span className="mesh-text">classified.</span>
         </h1>
         <p
-          className="animate-rise mt-3 text-[14px] leading-relaxed text-white/55 sm:mt-4 sm:text-[15px]"
+          className="animate-rise mt-3 text-[15px] leading-relaxed text-white/55 sm:mt-4 hidden sm:block"
           style={{ animationDelay: "80ms" }}
         >
           Center your face in the reticle. Analysis runs entirely on your

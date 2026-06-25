@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { BRAND, ENGINE, MODEL_VERSION } from "@/lib/copy";
+import { BRAND, MODEL_VERSION } from "@/lib/copy";
 import type { AnalysisResult } from "@/lib/analysis";
 
 /*
@@ -88,7 +88,7 @@ const ResultCard = forwardRef<
               className="text-[10px] uppercase tracking-wider text-white/40"
               style={{ fontFamily: "var(--font-geist-mono), monospace" }}
             >
-              conf {result.confidence.toFixed(1)}%
+              accuracy {result.confidence.toFixed(1)}%
             </div>
           </div>
         </div>
@@ -97,40 +97,19 @@ const ResultCard = forwardRef<
           {result.verdict}
         </p>
 
-        {/* signature row */}
-        <div className="mt-6 flex items-end justify-between gap-4">
-          <div className="flex flex-col">
-            <span
-              className="text-[18px] leading-none text-white/90"
-              style={{ fontFamily: "var(--font-geist-sans), cursive" }}
-            >
-              {BRAND}
-            </span>
-            <span className="mt-1.5 border-t border-white/15 pt-1 text-[9px] uppercase tracking-wider text-white/40">
-              Chief Detection Officer
-            </span>
-          </div>
-          <div className="text-right">
-            <span className="text-[12px] text-white/80">{issued}</span>
-            <span className="mt-1.5 block border-t border-white/15 pt-1 text-[9px] uppercase tracking-wider text-white/40">
-              Date issued
-            </span>
-          </div>
-        </div>
-
         {/* footer meta */}
-        <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+        <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
           <span
             className="text-[9px] tracking-wider text-white/35"
             style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
-            {ENGINE} · {MODEL_VERSION}
+            {BRAND} - {MODEL_VERSION}
           </span>
           <span
             className="text-[9px] tracking-wider text-white/35"
             style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
-            Parody · not a diagnosis
+            {issued}
           </span>
         </div>
       </div>
