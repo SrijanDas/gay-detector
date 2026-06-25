@@ -23,24 +23,39 @@ function writeMuted(muted: boolean): void {
 
 export default function BackgroundMusic() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  // Mirror the real <audio> state so the icon never lies. "Audible" means the
+  // element is actually playing AND not muted.
   const [muted, setMuted] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const audible = playing && !muted;
 
-  // Autoplay on mount; fall back to the first user gesture if the browser
-  // blocks it (the standard autoplay-with-fallback pattern).
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const initialMuted = readMuted();
-    setMuted(initialMuted);
     audio.muted = initialMuted;
     audio.volume = 0.4;
+    setMuted(initialMuted);
+    setPlaying(!audio.paused);
 
+    // Keep React state synced to whatever the element actually does — whether
+    // playback starts via autoplay, the first-gesture fallback, or the toggle.
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+    const onVolumeChange = () => {
+      setMuted(audio.muted);
+      writeMuted(audio.muted);
+    };
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("volumechange", onVolumeChange);
+
+    // Autoplay on mount; fall back to the first user gesture if blocked
+    // (the standard autoplay-with-fallback pattern).
     let removeFallback = () => {};
-
     const tryPlay = () => {
       audio.play().catch(() => {
-        // Blocked — wait for the first interaction, then try once more.
         const onGesture = () => {
           audio.play().catch(() => {});
           removeFallback();
@@ -55,20 +70,27 @@ export default function BackgroundMusic() {
         };
       });
     };
-
     tryPlay();
-    return () => removeFallback();
+
+    return () => {
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("volumechange", onVolumeChange);
+      removeFallback();
+    };
   }, []);
 
-  function toggleMuted() {
+  // Toggle audible sound. State updates flow back through the audio events
+  // above, so the icon always matches reality.
+  function toggleSound() {
     const audio = audioRef.current;
     if (!audio) return;
-    const next = !muted;
-    audio.muted = next;
-    setMuted(next);
-    writeMuted(next);
-    // If autoplay never kicked in, treat this click as the starting gesture.
-    if (audio.paused) audio.play().catch(() => {});
+    if (audible) {
+      audio.muted = true; // go silent, keep the track running
+    } else {
+      audio.muted = false;
+      if (audio.paused) audio.play().catch(() => {});
+    }
   }
 
   return (
@@ -76,12 +98,12 @@ export default function BackgroundMusic() {
       <audio ref={audioRef} src={SRC} loop preload="auto" />
       <button
         type="button"
-        onClick={toggleMuted}
-        aria-label={muted ? "Unmute music" : "Mute music"}
-        aria-pressed={muted}
+        onClick={toggleSound}
+        aria-label={audible ? "Mute music" : "Unmute music"}
+        aria-pressed={!audible}
         className="fixed bottom-4 right-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full border border-hairline bg-card text-body backdrop-blur-sm transition hover:text-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/15"
       >
-        {muted ? <MutedIcon /> : <SoundIcon />}
+        {audible ? <SoundIcon /> : <MutedIcon />}
       </button>
     </>
   );
