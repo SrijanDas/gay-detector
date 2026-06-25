@@ -156,6 +156,14 @@ body {
     background-position: 44px 44px;
   }
 }
+@keyframes marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
 @keyframes stamp-in {
   0% {
     opacity: 0;
@@ -190,6 +198,28 @@ body {
 }
 .animate-stamp {
   animation: stamp-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-marquee {
+  animation: marquee-rtl 36s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+.edge-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

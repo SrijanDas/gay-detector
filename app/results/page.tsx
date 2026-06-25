@@ -71,7 +71,7 @@ export default function ResultsPage() {
   }
 
   async function handleShare() {
-    const text = `Spectrum flagged me ${result?.percentage.toFixed(
+    const text = `Gay Detector flagged me ${result?.percentage.toFixed(
       1
     )}% gay (${result?.tier}). Detection is conclusive.`;
     try {

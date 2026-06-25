@@ -14,18 +14,18 @@ const geistMono = Geist_Mono({
   weight: ["400", "500"],
 });
 
-const title = "Spectrum — AI Sexuality Inference Engine";
+const title = "Gay Detector — AI Facial Inference Engine";
 const description =
-  "The world's most advanced facial homosexuality detector. 47 neural networks. 99.7% confidence. Findings are conclusive.";
+  "The world's most advanced facial homosexuality detector. 478 landmarks. 47 neural networks. 99.7% confidence. Findings are conclusive.";
 
 export const metadata: Metadata = {
   title,
   description,
-  applicationName: "Spectrum",
+  applicationName: "Gay Detector",
   openGraph: {
     title,
     description,
-    siteName: "Spectrum",
+    siteName: "Gay Detector",
     type: "website",
   },
   twitter: {

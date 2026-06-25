@@ -4,7 +4,7 @@
  * The verdict is always positive — the comedy is in the seriousness.
  */
 
-export const BRAND = "Spectrum";
+export const BRAND = "Gay Detector";
 export const ENGINE = "Homosexuality Detection System";
 export const MODEL_VERSION = "v4.2.0";
 
@@ -92,20 +92,17 @@ export const BLURB_CLOSERS: string[] = [
   "Detection complete. Resistance was statistically futile.",
 ];
 
-// Easter-egg access codes → special copy. Any code still grants access.
-export const EASTER_EGGS: Record<string, string> = {
-  straight: "Subject claims 'straight'. Logged as denial. Proceeding…",
-  ihaveagirlfriend: "Relationship status noted. Irrelevant to the model. Proceeding…",
-  notgay: "Self-report rejected. The face overrides the testimony. Proceeding…",
-  admin: "Elevated access is unnecessary. Everyone gets the same scan. Proceeding…",
-  test: "Test subject accepted. There are no negative results. Proceeding…",
-};
+// The one legitimate access code. Entry is case-insensitive and ignores
+// whitespace. Everything else is a denial — see below.
+export const ACCESS_CODE = "GAYDAR-7";
 
-export const GENERIC_GRANTS: string[] = [
-  "Access code accepted. Detection bay is ready.",
-  "Credentials verified. Step into the scanner.",
-  "Clearance granted. The system is watching.",
-];
+// Shown for a beat when the correct code is entered, just before the scanner.
+export const ACCESS_GRANTED = "Access code accepted. Detection bay is ready.";
+
+// Wrong code → no scan needed. The system has already made up its mind.
+export const ACCESS_DENIED_TITLE = "Access denied";
+export const ACCESS_DENIED_VERDICT =
+  "Invalid access code. In our records, only a positive subject mistypes the credential. Classification logged as conclusive — the scan was a formality you no longer require.";
 
 // Funny fallback when the camera is denied.
 export const CAMERA_DENIED =
