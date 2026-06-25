@@ -1,40 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MeshBackdrop from "@/components/MeshBackdrop";
 import TrainingMarquee from "@/components/TrainingMarquee";
 import { unlock } from "@/lib/store";
-import {
-  BRAND,
-  ENGINE,
-  MODEL_VERSION,
-  ACCESS_CODE,
-  ACCESS_GRANTED,
-  ACCESS_DENIED_TITLE,
-  ACCESS_DENIED_VERDICT,
-} from "@/lib/copy";
+import { BRAND, ENGINE, MODEL_VERSION, ACCESS_CODE, ACCESS_GRANTED } from "@/lib/copy";
 
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "");
 
 export default function GatePage() {
   const router = useRouter();
   const [code, setCode] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "verifying" | "granted" | "denied"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "verifying" | "granted">(
+    "idle"
+  );
   const [toast, setToast] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (status === "verifying" || status === "granted") return;
+    if (status !== "idle") return;
     const correct = normalize(code) === normalize(ACCESS_CODE);
 
     setStatus("verifying");
     setToast(null);
     window.setTimeout(() => {
       if (!correct) {
-        setStatus("denied");
+        router.push("/access-denied");
         return;
       }
       setToast(ACCESS_GRANTED);
@@ -46,19 +39,22 @@ export default function GatePage() {
     }, 1300);
   }
 
-  const busy = status === "verifying" || status === "granted";
+  const busy = status !== "idle";
 
   return (
     <main className="relative flex min-h-dvh flex-col overflow-hidden bg-canvas text-ink">
       <MeshBackdrop intensity={0.5} />
 
       <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10">
-        <div className="flex items-center gap-2.5">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 rounded-md outline-none transition focus-visible:ring-4 focus-visible:ring-accent/15"
+        >
           <span className="mesh-bg h-5 w-5 rounded-[6px]" />
           <span className="text-[15px] font-semibold tracking-tight">
             {BRAND}
           </span>
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           <span className="hidden items-center gap-1.5 rounded-full border border-hairline px-2.5 py-1 sm:inline-flex">
             <span className="h-1.5 w-1.5 animate-glow rounded-full bg-accent" />
@@ -73,23 +69,24 @@ export default function GatePage() {
       {/* hero + auth | live system */}
       <section className="relative z-10 mx-auto grid w-full max-w-5xl items-center gap-12 px-6 pb-4 pt-8 sm:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:pt-12">
         <div>
-          <p className="eyebrow animate-rise">Classified · facial inference</p>
+          <p className="eyebrow animate-rise">Classified · AI facial analysis</p>
           <h1
             className="display animate-rise mt-4 text-[clamp(2.4rem,7vw,3.9rem)]"
             style={{ animationDelay: "60ms" }}
           >
-            Homosexuality
+            Your facial
             <br />
-            detection, from
+            features, decoded
             <br />
-            <span className="mesh-text">a single frame.</span>
+            <span className="mesh-text">by the algorithm.</span>
           </h1>
           <p
             className="animate-rise mt-5 max-w-md text-[16px] leading-relaxed text-body"
             style={{ animationDelay: "120ms" }}
           >
-            {BRAND} is a forensic-grade {ENGINE.toLowerCase()}. It maps 478
-            facial landmarks and returns a classification in seconds. Enter your
+            {BRAND} runs a forensic-grade {ENGINE.toLowerCase()}. Our neural net
+            analyzes 478 facial landmarks — jawline, cheekbones, ocular symmetry
+            — and returns a conclusive classification in seconds. Enter your
             access code to begin.
           </p>
 
@@ -105,10 +102,7 @@ export default function GatePage() {
               <input
                 id="code"
                 value={code}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  if (status === "denied") setStatus("idle");
-                }}
+                onChange={(e) => setCode(e.target.value)}
                 disabled={busy}
                 autoComplete="off"
                 autoCapitalize="off"
@@ -143,29 +137,6 @@ export default function GatePage() {
               <p className="mono text-[13px] leading-snug text-body">{toast}</p>
             </div>
           )}
-
-          {status === "denied" && (
-            <div
-              role="alert"
-              className="animate-stamp mt-6 flex max-w-md items-start gap-4 rounded-md border border-alert/40 bg-alert/10 px-4 py-4"
-              style={{ transformOrigin: "left center" }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/memes/gay-with-finger-pointed-towards-user.jpg"
-                alt=""
-                className="h-16 w-16 shrink-0 rounded-lg bg-white/5 object-contain"
-              />
-              <div>
-                <div className="mono text-[11px] font-semibold uppercase tracking-widest text-alert">
-                  {ACCESS_DENIED_TITLE}
-                </div>
-                <p className="mono mt-1.5 text-[13px] leading-snug text-body">
-                  {ACCESS_DENIED_VERDICT}
-                </p>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* what the model was trained on */}
@@ -186,15 +157,6 @@ export default function GatePage() {
           </div>
         </div>
       </section>
-
-      <footer className="relative z-10 px-6 pb-8 pt-12 sm:px-10">
-        <p className="mono mx-auto max-w-5xl text-[11px] leading-relaxed text-mute">
-          Parody. {BRAND} detects nothing, makes no medical or factual claims,
-          and is not a real classifier. Faces and memes are used for satire and
-          comedic effect. Your camera frame never leaves this device. Everyone
-          is fabulous.
-        </p>
-      </footer>
     </main>
   );
 }

@@ -99,10 +99,10 @@ export const ACCESS_CODE = "GAYDAR-7";
 // Shown for a beat when the correct code is entered, just before the scanner.
 export const ACCESS_GRANTED = "Access code accepted. Detection bay is ready.";
 
-// Wrong code → no scan needed. The system has already made up its mind.
-export const ACCESS_DENIED_TITLE = "Access denied";
-export const ACCESS_DENIED_VERDICT =
-  "Invalid access code. In our records, only a positive subject mistypes the credential. Classification logged as conclusive — the scan was a formality you no longer require.";
+// Wrong code → bounced to /access-denied.
+export const DENIAL_TAUNT = "You thought you could get in?";
+export const DENIAL_PUNCHLINE = "Now go back to doing your gay shit.";
+export const DENIAL_BUTTON = "Yes I am gay - try again";
 
 // Funny fallback when the camera is denied.
 export const CAMERA_DENIED =

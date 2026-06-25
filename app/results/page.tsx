@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import GaugeRing from "@/components/GaugeRing";
 import MetricBar from "@/components/MetricBar";
@@ -98,12 +99,15 @@ export default function ResultsPage() {
       <MeshBackdrop intensity={0.4} />
 
       <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10">
-        <div className="flex items-center gap-2.5">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 rounded-md outline-none transition focus-visible:ring-4 focus-visible:ring-accent/15"
+        >
           <span className="mesh-bg h-5 w-5 rounded-[6px]" />
           <span className="text-[15px] font-semibold tracking-tight">
             {BRAND}
           </span>
-        </div>
+        </Link>
         <span className="eyebrow hidden sm:inline">{ENGINE}</span>
       </header>
 

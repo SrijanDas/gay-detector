@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ScannerView from "@/components/ScannerView";
 import { isUnlocked, saveResult } from "@/lib/store";
@@ -33,12 +34,15 @@ export default function ScanPage() {
         className="grid-bg pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(120%_80%_at_50%_30%,black,transparent_75%)]"
       />
       <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10">
-        <div className="flex items-center gap-2.5">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 rounded-md outline-none transition focus-visible:ring-4 focus-visible:ring-white/20"
+        >
           <span className="mesh-bg h-5 w-5 rounded-[6px]" />
           <span className="text-[15px] font-semibold tracking-tight">
             {BRAND}
           </span>
-        </div>
+        </Link>
         <span className="eyebrow !text-white/45">{ENGINE}</span>
       </header>
 
