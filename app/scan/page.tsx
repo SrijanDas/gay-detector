@@ -64,19 +64,6 @@ export default function ScanPage() {
         <div className="mt-8">
           <ScannerView onComplete={handleComplete} />
         </div>
-
-        <div className="animate-rise mt-6 flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/memes/gay-fear.jpg"
-            alt=""
-            className="h-10 w-10 shrink-0 rounded object-cover"
-          />
-          <p className="mono text-[11px] leading-snug text-white/45">
-            Typical subject response during classification. Entirely normal.
-            The result will not change.
-          </p>
-        </div>
       </section>
     </main>
   );

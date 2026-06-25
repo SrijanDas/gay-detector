@@ -188,7 +188,7 @@ export default function ScannerView({
             </p>
             <button
               onClick={startDetection}
-              className="mt-5 inline-flex h-10 items-center rounded-pill bg-white px-5 text-[14px] font-medium text-ink transition hover:bg-white/90"
+              className="mt-5 inline-flex h-10 items-center rounded-pill bg-white px-5 text-[14px] font-medium text-black transition hover:bg-white/90"
             >
               {SCAN_START_BUTTON}
             </button>
