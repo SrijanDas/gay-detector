@@ -186,11 +186,6 @@ export default function ResultsPage() {
                         />
                         {/* keeps the column tall when there's no sibling to stretch against */}
                         <div className="invisible aspect-square w-full" />
-                        <figcaption className="absolute right-0 top-0 m-3 rounded bg-black/60 px-2.5 py-1 backdrop-blur">
-                            <span className="mono text-[10px] uppercase tracking-widest text-white/80">
-                                Model reaction
-                            </span>
-                        </figcaption>
                     </figure>
                 </div>
 
