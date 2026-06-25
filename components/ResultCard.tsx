@@ -22,7 +22,7 @@ const ResultCard = forwardRef<
   return (
     <div
       ref={ref}
-      className="mesh-bg w-[360px] rounded-2xl p-[2px]"
+      className="mesh-bg w-full max-w-90 rounded-2xl p-[2px]"
       style={{ fontFamily: "var(--font-geist-sans), Inter, sans-serif" }}
     >
       <div className="relative overflow-hidden rounded-[15px] bg-night px-7 pb-7 pt-6 text-white">

@@ -41,7 +41,7 @@ export default function ScanOverlay({ active }: { active: boolean }) {
       </div>
 
       {/* face oval guide */}
-      <div className="absolute left-1/2 top-[46%] h-[58%] w-[42%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/30" />
+      <div className="absolute left-1/2 top-[47%] h-[68%] w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/30" />
 
       {/* landmark dots + connective web */}
       {active && (

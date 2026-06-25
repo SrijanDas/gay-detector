@@ -235,7 +235,7 @@ export default function ScannerView({
       </div>
 
       {/* Telemetry */}
-      <div className="mx-auto mt-6 w-full max-w-md">
+      <div className="mx-auto mt-4 w-full max-w-md sm:mt-6">
         <div className="flex items-center justify-between">
           <span className="eyebrow">Analysis</span>
           <span className="mono text-[12px] tabular-nums text-mute">
@@ -248,7 +248,7 @@ export default function ScannerView({
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="mono mt-3 h-4 text-[13px] text-body">
+        <p className="mono mt-3 h-4 pr-12 text-[13px] text-body sm:pr-0">
           {phase === "scanning" ? (
             <>
               <span className="text-ink">›</span> {statusLine}
