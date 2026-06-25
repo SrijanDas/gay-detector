@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 const title = "Gay Detector — AI Facial Inference Engine";
 const description =
-  "The world's most advanced facial homosexuality detector. 478 landmarks. 47 neural networks. 99.7% confidence. Findings are conclusive.";
+  "A facial homosexuality detector. 478 landmarks. One neural network. 98.69% confidence. Findings are conclusive.";
 
 export const metadata: Metadata = {
   title,

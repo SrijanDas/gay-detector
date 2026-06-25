@@ -24,6 +24,17 @@ export default function AccessDeniedPage() {
     <main className="relative flex min-h-dvh flex-col overflow-hidden bg-canvas text-ink">
       <MeshBackdrop intensity={0.45} />
 
+      {/* Police-siren red alert: full-screen frame that pulses in sync with the heading */}
+      <div
+        aria-hidden
+        className="animate-siren-flash pointer-events-none fixed inset-0 z-0"
+        style={{
+          boxShadow: "inset 0 0 220px 40px rgba(255, 77, 77, 0.85)",
+          background:
+            "radial-gradient(120% 120% at 50% 50%, transparent 45%, rgba(255, 77, 77, 0.35) 100%)",
+        }}
+      />
+
       <header className="relative z-10 flex items-center justify-between px-6 py-5 sm:px-10">
         <Link
           href="/"
@@ -38,8 +49,10 @@ export default function AccessDeniedPage() {
       </header>
 
       <section className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-10 text-center sm:px-10">
-        <span className="animate-stamp mono rounded-full border border-alert/40 bg-alert/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-alert">
-          Access denied
+        <span className="animate-stamp block">
+          <span className="animate-siren display block text-[clamp(2.2rem,9vw,4rem)] font-bold uppercase leading-[0.95] tracking-tight text-alert">
+            Access denied
+          </span>
         </span>
 
         <h1

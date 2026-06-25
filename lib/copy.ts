@@ -6,7 +6,7 @@
 
 export const BRAND = "Gay Detector";
 export const ENGINE = "Homosexuality Detection System";
-export const MODEL_VERSION = "v4.2.0";
+export const MODEL_VERSION = "v0.1.0";
 
 // Rotating telemetry shown during the "scan". Reads like a real CV pipeline,
 // then doesn't.
@@ -19,7 +19,7 @@ export const SCAN_STATUS: string[] = [
   "Estimating eyebrow arch curvature…",
   "Analyzing lip vermilion ratio…",
   "Running gait-from-face inference…",
-  "Cross-referencing 1.2M labeled samples…",
+  "Cross-referencing 2,000 labeled samples…",
   "Convolution pass 1/3…",
   "Convolution pass 2/3…",
   "Convolution pass 3/3…",
@@ -75,14 +75,14 @@ export const METRIC_SPECS: MetricSpec[] = [
 
 // Pseudo-scientific paragraph fragments, assembled deterministically.
 export const BLURB_OPENERS: string[] = [
-  "After extracting 478 facial landmarks across 47 detection passes,",
+  "After extracting 478 facial landmarks across 3 detection passes,",
   "Following a triple-blind convolutional analysis of your bone structure,",
-  "Having cross-referenced your facial geometry against 1.2 million samples,",
+  "Having cross-referenced your facial geometry against 2,000 samples,",
 ];
 
 export const BLURB_BODIES: string[] = [
   "the system reached a positive classification with high confidence.",
-  "every model in the ensemble returned the same verdict.",
+  "the model returned the same verdict on every run.",
   "the jawline and ocular vectors were, frankly, decisive.",
 ];
 

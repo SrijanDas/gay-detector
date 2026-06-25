@@ -74,20 +74,20 @@ export default function GatePage() {
             className="display animate-rise mt-4 text-[clamp(2.4rem,7vw,3.9rem)]"
             style={{ animationDelay: "60ms" }}
           >
-            Your facial
+            Your face,
             <br />
-            features, decoded
+            analyzed
             <br />
-            <span className="mesh-text">by the algorithm.</span>
+            <span className="mesh-text">by AI.</span>
           </h1>
           <p
             className="animate-rise mt-5 max-w-md text-[16px] leading-relaxed text-body"
             style={{ animationDelay: "120ms" }}
           >
-            {BRAND} runs a forensic-grade {ENGINE.toLowerCase()}. Our neural net
-            analyzes 478 facial landmarks — jawline, cheekbones, ocular symmetry
-            — and returns a conclusive classification in seconds. Enter your
-            access code to begin.
+            {BRAND} runs a {ENGINE.toLowerCase()}. A single model analyzes 478
+            facial landmarks — jawline, cheekbones, ocular symmetry — and
+            returns a classification in seconds. Enter your access code to
+            begin.
           </p>
 
           <form
@@ -146,12 +146,18 @@ export default function GatePage() {
         >
           <div className="flex items-center justify-between">
             <span className="eyebrow">Model training corpus</span>
-            <span className="mono text-[11px] text-mute">1.2M+ subjects</span>
           </div>
           <p className="mono mt-2 text-[12px] leading-relaxed text-mute">
-            A sample of the verified subjects this model was trained on. Every
-            entry returned positive.
+            A sample of the verified subjects this model was trained on.
           </p>
+          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
+            <span className="mono text-[11px] text-mute">
+              <span className="text-ink">6,162</span> labeled facial scans
+            </span>
+            <span className="mono text-[11px] text-mute">
+              <span className="text-ink">98.69%</span> validation accuracy
+            </span>
+          </div>
           <div className="mt-4">
             <TrainingMarquee />
           </div>
