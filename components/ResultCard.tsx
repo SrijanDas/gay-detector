@@ -1,103 +1,136 @@
 import { forwardRef } from "react";
-import { BRAND, MODEL_VERSION } from "@/lib/copy";
+import { BRAND, ENGINE, MODEL_VERSION } from "@/lib/copy";
 import type { AnalysisResult } from "@/lib/analysis";
 
 /*
- * The shareable "Detection Record". Built to be captured to PNG by
- * html-to-image, so it avoids capture-flaky tricks (no background-clip:text):
- * solid text on a dark card, with the accent used as fills and a top band.
+ * The downloadable "Certificate of Certified Gayness". Built to be captured to
+ * PNG by html-to-image, so it avoids capture-flaky tricks (no
+ * background-clip:text): solid white text on a dark card, with the mesh accent
+ * used only as fills, frames, and the seal.
  */
 const ResultCard = forwardRef<
   HTMLDivElement,
   { result: AnalysisResult; shot?: string | null }
->(function ResultCard({ result, shot }, ref) {
+>(function ResultCard({ result }, ref) {
+  const serial = `#${result.seed.toString(16).slice(0, 6).toUpperCase()}`;
+  const issued = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
   return (
     <div
       ref={ref}
-      className="relative w-[340px] overflow-hidden rounded-2xl bg-night text-white"
+      className="mesh-bg w-[360px] rounded-2xl p-[2px]"
       style={{ fontFamily: "var(--font-geist-sans), Inter, sans-serif" }}
     >
-      {/* mesh top band */}
-      <div className="mesh-bg h-1.5 w-full" />
-
-      <div className="px-6 pb-6 pt-5">
+      <div className="relative overflow-hidden rounded-[15px] bg-night px-7 pb-7 pt-6 text-white">
+        {/* header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="mesh-bg h-4 w-4 rounded-[5px]" />
-            <span className="text-[14px] font-semibold tracking-tight">
+            <span className="text-[13px] font-semibold tracking-tight">
               {BRAND}
             </span>
           </div>
           <span
-            className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em]"
-            style={{
-              fontFamily: "var(--font-geist-mono), monospace",
-              color: "#ff6b6b",
-              backgroundColor: "rgba(255,77,77,0.12)",
-            }}
+            className="text-[10px] tracking-wider text-white/40"
+            style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
-            ● Positive
+            No. {serial}
           </span>
         </div>
 
-        {/* avatar + headline */}
-        <div className="mt-5 flex items-center gap-4">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10">
-            {shot ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={shot}
-                alt=""
-                className="h-full w-full object-cover"
-                crossOrigin="anonymous"
-              />
-            ) : (
-              <div className="mesh-bg h-full w-full opacity-80" />
-            )}
+        {/* official seal */}
+        <div className="mt-6 flex justify-center">
+          <div className="mesh-bg flex h-16 w-16 items-center justify-center rounded-full">
+            <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-night">
+              <span className="text-[24px] font-bold leading-none">✓</span>
+            </div>
           </div>
-          <div className="min-w-0">
+        </div>
+
+        {/* title block */}
+        <div className="mt-5 text-center">
+          <div
+            className="text-[10px] uppercase tracking-[0.3em] text-white/45"
+            style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+          >
+            Official Certificate
+          </div>
+          <p className="mx-auto mt-3 max-w-[15rem] text-[12px] leading-relaxed text-white/55">
+            This is to certify that the bearer has been examined and is hereby
+          </p>
+          <h2
+            className="mt-2 text-[34px] font-bold leading-none tracking-tight"
+            style={{ letterSpacing: "-0.02em" }}
+          >
+            CERTIFIED GAY
+          </h2>
+          <div className="mesh-bg mx-auto mt-3 h-[3px] w-24 rounded-full" />
+        </div>
+
+        {/* score */}
+        <div className="mt-5 flex items-center justify-center gap-3">
+          <span
+            className="text-[40px] font-semibold leading-none tabular-nums"
+            style={{ letterSpacing: "-0.04em" }}
+          >
+            {result.percentage.toFixed(1)}
+            <span className="text-[20px] font-semibold text-white/60">%</span>
+          </span>
+          <div className="text-left">
+            <div className="text-[12px] font-medium leading-tight">
+              {result.tier}
+            </div>
             <div
-              className="text-[11px] uppercase tracking-[0.16em] text-white/45"
+              className="text-[10px] uppercase tracking-wider text-white/40"
               style={{ fontFamily: "var(--font-geist-mono), monospace" }}
             >
-              Classification
+              conf {result.confidence.toFixed(1)}%
             </div>
-            <div className="mt-1 flex items-baseline gap-1">
-              <span
-                className="text-[52px] font-semibold leading-none tabular-nums"
-                style={{ letterSpacing: "-0.04em" }}
-              >
-                {result.percentage.toFixed(1)}
-              </span>
-              <span className="text-[22px] font-semibold text-white/60">%</span>
-            </div>
-            <div className="text-[13px] text-white/55">gay</div>
           </div>
         </div>
 
-        {/* tier */}
-        <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5">
-          <span className="mesh-bg h-2 w-2 rounded-full" />
-          <span className="text-[13px] font-medium">{result.tier}</span>
-        </div>
-
-        <p className="mt-3 text-[13px] leading-relaxed text-white/70">
+        <p className="mt-4 text-center text-[12px] leading-relaxed text-white/65">
           {result.verdict}
         </p>
+
+        {/* signature row */}
+        <div className="mt-6 flex items-end justify-between gap-4">
+          <div className="flex flex-col">
+            <span
+              className="text-[18px] leading-none text-white/90"
+              style={{ fontFamily: "var(--font-geist-sans), cursive" }}
+            >
+              {BRAND}
+            </span>
+            <span className="mt-1.5 border-t border-white/15 pt-1 text-[9px] uppercase tracking-wider text-white/40">
+              Chief Detection Officer
+            </span>
+          </div>
+          <div className="text-right">
+            <span className="text-[12px] text-white/80">{issued}</span>
+            <span className="mt-1.5 block border-t border-white/15 pt-1 text-[9px] uppercase tracking-wider text-white/40">
+              Date issued
+            </span>
+          </div>
+        </div>
 
         {/* footer meta */}
         <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
           <span
-            className="text-[10px] tracking-wider text-white/40"
+            className="text-[9px] tracking-wider text-white/35"
             style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
-            {MODEL_VERSION} · conf {result.confidence.toFixed(1)}%
+            {ENGINE} · {MODEL_VERSION}
           </span>
           <span
-            className="text-[10px] tracking-wider text-white/40"
+            className="text-[9px] tracking-wider text-white/35"
             style={{ fontFamily: "var(--font-geist-mono), monospace" }}
           >
-            #{result.seed.toString(16).slice(0, 6).toUpperCase()}
+            Parody · not a diagnosis
           </span>
         </div>
       </div>

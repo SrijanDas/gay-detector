@@ -17,6 +17,7 @@ export default function ResultsPage() {
   const [shot, setShot] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
   const [shareNote, setShareNote] = useState<string | null>(null);
+  const [pending, setPending] = useState<"download" | "share" | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,6 +93,13 @@ export default function ResultsPage() {
     router.push("/scan");
   }
 
+  function proceed() {
+    const action = pending;
+    setPending(null);
+    if (action === "download") handleDownload();
+    else if (action === "share") handleShare();
+  }
+
   if (!result) return null;
 
   return (
@@ -128,9 +136,9 @@ export default function ResultsPage() {
           Classification <span className="mesh-text">complete.</span>
         </h1>
 
-        <div className="mt-9 grid items-start gap-6 lg:grid-cols-2">
-          {/* gauge + verdict + reaction */}
-          <div className="rounded-2xl border border-hairline bg-card p-6 sm:p-7">
+        <div className="mt-9 grid items-stretch gap-6 lg:grid-cols-2">
+          {/* gauge + verdict */}
+          <div className="flex items-center justify-center rounded-2xl border border-hairline bg-card p-6 sm:p-7">
             <div className="flex flex-col items-center text-center">
               <GaugeRing value={result.percentage} />
               <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/5 px-3.5 py-1.5 ring-hair">
@@ -144,64 +152,47 @@ export default function ResultsPage() {
                 Model confidence {result.confidence.toFixed(1)}%
               </div>
             </div>
-
-            {/* model reaction meme */}
-            <figure className="relative mt-6 overflow-hidden rounded-xl ring-hair">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/memes/ha-gay.jpg"
-                alt="model reaction"
-                className="h-56 w-full object-cover object-center sm:h-64"
-              />
-              <figcaption className="absolute left-0 top-0 m-2 rounded bg-black/60 px-2 py-0.5">
-                <span className="mono text-[10px] uppercase tracking-widest text-white/80">
-                  Model reaction
-                </span>
-              </figcaption>
-            </figure>
           </div>
 
-          {/* facial signal breakdown */}
-          <div className="rounded-2xl border border-hairline bg-card p-6 sm:p-7">
-            <div className="flex items-center justify-between">
-              <span className="eyebrow">Facial signal breakdown</span>
-              <span className="mono text-[11px] text-mute">
-                {result.metrics.length} features
+          {/* model reaction — the meme is the moment */}
+          <figure className="relative overflow-hidden rounded-2xl border border-hairline bg-black">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/memes/ha-gay.jpg"
+              alt="model reaction"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            {/* keeps the column tall when there's no sibling to stretch against */}
+            <div className="invisible aspect-square w-full" />
+            <figcaption className="absolute left-0 top-0 m-3 rounded bg-black/60 px-2.5 py-1 backdrop-blur">
+              <span className="mono text-[10px] uppercase tracking-widest text-white/80">
+                Model reaction
               </span>
-            </div>
-            <div className="mt-5 flex flex-col gap-4">
-              {result.metrics.map((m, i) => (
-                <MetricBar
-                  key={m.key}
-                  label={m.label}
-                  value={m.value}
-                  delay={250 + i * 100}
-                />
-              ))}
-            </div>
-            <p className="mono mt-6 border-t border-hairline pt-5 text-[13px] leading-relaxed text-body">
-              {result.blurb}
-            </p>
-          </div>
+            </figcaption>
+          </figure>
         </div>
 
-        {/* subject-flagged callout (pointing cat) */}
-        <div className="mt-6 flex items-center gap-4 rounded-2xl border border-hairline bg-card px-5 py-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/memes/gay-with-finger-pointed-towards-user.jpg"
-            alt=""
-            className="h-20 w-20 shrink-0 rounded-lg bg-white/5 object-contain"
-          />
-          <div>
-            <div className="mono text-[11px] uppercase tracking-widest text-alert">
-              Subject flagged
-            </div>
-            <p className="mt-1 text-[14px] text-body">
-              The system has reviewed the evidence and is pointing directly at
-              you. No appeal has been filed because none would succeed.
-            </p>
+        {/* facial signal breakdown — full width */}
+        <div className="mt-6 rounded-2xl border border-hairline bg-card p-6 sm:p-7">
+          <div className="flex items-center justify-between">
+            <span className="eyebrow">Facial signal breakdown</span>
+            <span className="mono text-[11px] text-mute">
+              {result.metrics.length} features
+            </span>
           </div>
+          <div className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+            {result.metrics.map((m, i) => (
+              <MetricBar
+                key={m.key}
+                label={m.label}
+                value={m.value}
+                delay={250 + i * 100}
+              />
+            ))}
+          </div>
+          <p className="mono mt-6 border-t border-hairline pt-5 text-[13px] leading-relaxed text-body">
+            {result.blurb}
+          </p>
         </div>
 
         {/* WHY ARE YOU GAE — the closing punchline */}
@@ -211,7 +202,7 @@ export default function ResultsPage() {
             <img
               src="/memes/why-are-you-gay.webp"
               alt="why are you gae"
-              className="h-52 w-52 shrink-0 rounded-xl object-cover ring-hair sm:h-60 sm:w-60"
+              className="h-72 w-72 shrink-0 rounded-xl object-cover ring-hair sm:h-80 sm:w-80 lg:h-96 lg:w-96"
             />
             <div className="text-center sm:text-left">
               <p className="eyebrow">Final inquiry · case closed</p>
@@ -219,54 +210,94 @@ export default function ResultsPage() {
                 The committee has{" "}
                 <span className="mesh-text">one question.</span>
               </h2>
-              <p className="mt-2 text-[15px] text-body">
-                Detection is final. Logged, signed, and filed. So, on the
-                record:
-              </p>
             </div>
           </div>
         </div>
 
-        {/* share row */}
-        <div className="mt-10 flex flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="order-2 flex flex-col gap-3 sm:flex-row lg:order-1">
-            <button
-              onClick={handleDownload}
-              disabled={downloading}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-pill bg-white px-6 text-[15px] font-medium text-black transition hover:bg-white/90 disabled:opacity-50"
-            >
-              {downloading ? "Rendering…" : "Download record"}
-            </button>
-            <button
-              onClick={handleShare}
-              className="inline-flex h-12 items-center justify-center rounded-pill border border-hairline bg-card px-6 text-[15px] font-medium text-ink transition hover:border-hairline-strong"
-            >
-              Share result
-            </button>
-            <button
-              onClick={scanAgain}
-              className="inline-flex h-12 items-center justify-center rounded-pill px-4 text-[15px] font-medium text-mute transition hover:text-ink"
-            >
-              Re-scan subject
-            </button>
-          </div>
+        {/* certificate + actions */}
+        <div className="mt-12 flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+          <ResultCard ref={cardRef} result={result} shot={shot} />
 
-          <div className="order-1 lg:order-2">
-            <ResultCard ref={cardRef} result={result} shot={shot} />
+          <div className="flex w-full max-w-sm flex-col gap-5">
+            <div className="text-center lg:text-left">
+              <p className="eyebrow">Your certificate is ready</p>
+              <h2 className="display mt-2 text-[clamp(1.4rem,4vw,2rem)]">
+                Make it <span className="mesh-text">official.</span>
+              </h2>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => setPending("download")}
+                disabled={downloading}
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-pill bg-white px-6 text-[15px] font-medium text-black transition hover:bg-white/90 disabled:opacity-50"
+              >
+                {downloading ? "Rendering…" : "Download certificate"}
+              </button>
+              <button
+                onClick={() => setPending("share")}
+                className="inline-flex h-12 items-center justify-center rounded-pill border border-hairline bg-card px-6 text-[15px] font-medium text-ink transition hover:border-hairline-strong"
+              >
+                Share result
+              </button>
+              <button
+                onClick={scanAgain}
+                className="inline-flex h-12 items-center justify-center rounded-pill px-4 text-[15px] font-medium text-mute transition hover:text-ink"
+              >
+                Re-scan subject
+              </button>
+            </div>
+
+            {shareNote && (
+              <p className="mono text-center text-[12px] text-mute lg:text-left">
+                {shareNote}
+              </p>
+            )}
           </div>
         </div>
-
-        {shareNote && (
-          <p className="mono mt-4 text-center text-[12px] text-mute lg:text-left">
-            {shareNote}
-          </p>
-        )}
-
-        <p className="mono mt-12 text-center text-[11px] leading-relaxed text-mute">
-          Parody. {BRAND} detects nothing and the score is for laughs. Memes are
-          used for comedic effect. Everyone is fabulous. ♥
-        </p>
       </section>
+
+      {/* why-are-you-gae gate — must face the question before proceeding */}
+      {pending && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-6 py-10 backdrop-blur-sm"
+          onClick={() => setPending(null)}
+        >
+          <div
+            className="animate-rise w-full max-w-sm overflow-hidden rounded-2xl border border-hairline bg-panel"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/memes/why-are-you-gay.webp"
+              alt="why are you gae"
+              className="block w-full object-cover"
+            />
+            <div className="px-6 py-6 text-center">
+              <p className="eyebrow">Final inquiry · before we proceed</p>
+              <h3 className="display mt-2 text-[clamp(1.5rem,5vw,2rem)]">
+                Why are you <span className="mesh-text">gay?</span>
+              </h3>
+              <div className="mt-6 flex flex-col gap-3">
+                <button
+                  onClick={proceed}
+                  className="inline-flex h-12 items-center justify-center rounded-pill bg-white px-6 text-[15px] font-medium text-black transition hover:bg-white/90"
+                >
+                  {pending === "download"
+                    ? "Download certificate"
+                    : "Share result"}
+                </button>
+                <button
+                  onClick={() => setPending(null)}
+                  className="inline-flex h-12 items-center justify-center rounded-pill px-4 text-[15px] font-medium text-mute transition hover:text-ink"
+                >
+                  Never mind
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
