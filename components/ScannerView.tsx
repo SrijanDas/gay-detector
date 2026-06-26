@@ -21,7 +21,11 @@ import {
 
 type Phase = "idle" | "requesting" | "scanning" | "denied" | "done";
 
-const SCAN_MS = 12000;
+// Scan length varies a little per run so it feels organic, not scripted.
+const SCAN_MS_MIN = 8000;
+const SCAN_MS_MAX = 10000;
+const pickScanMs = () =>
+  Math.round(SCAN_MS_MIN + Math.random() * (SCAN_MS_MAX - SCAN_MS_MIN));
 
 export default function ScannerView({
   onComplete,
@@ -32,6 +36,7 @@ export default function ScannerView({
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number>(0);
   const startRef = useRef<number>(0);
+  const durationRef = useRef<number>(SCAN_MS_MAX);
   const finishedRef = useRef(false);
   const cancelledRef = useRef(false);
 
@@ -99,7 +104,7 @@ export default function ScannerView({
     (now: number) => {
       if (!startRef.current) startRef.current = now;
       const elapsed = now - startRef.current;
-      const p = Math.min(100, (elapsed / SCAN_MS) * 100);
+      const p = Math.min(100, (elapsed / durationRef.current) * 100);
       setProgress(p);
       if (p >= 100) {
         finish();
@@ -112,6 +117,7 @@ export default function ScannerView({
 
   const beginScan = useCallback(() => {
     startRef.current = 0;
+    durationRef.current = pickScanMs();
     setPhase("scanning");
     rafRef.current = requestAnimationFrame(tick);
   }, [tick]);
