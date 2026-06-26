@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BackgroundMusic from "@/components/BackgroundMusic";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import {
   SITE_URL,
   SITE_NAME,
@@ -95,6 +96,7 @@ export default function RootLayout({
         {children}
         <BackgroundMusic />
       </body>
+      <GoogleAnalytics gaId="G-3Y96SLWTE2" />
     </html>
   );
 }
