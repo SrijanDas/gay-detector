@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored MediaPipe wasm/model loader — third-party, not ours to lint.
+    "public/models/**",
   ]),
 ]);
 

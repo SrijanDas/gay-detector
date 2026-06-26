@@ -4,6 +4,8 @@
  * The verdict is always positive — the comedy is in the seriousness.
  */
 
+import type { TrackingReason } from "./faceTracking";
+
 export const BRAND = "Gay Detector";
 export const ENGINE = "Homosexuality Detection System";
 export const MODEL_VERSION = "v0.1.0";
@@ -162,3 +164,40 @@ export const DENIAL_BUTTON = "Yes I am gay - try again";
 // Funny fallback when the camera is denied.
 export const CAMERA_DENIED =
   "Camera access refused. Noted as evasive behavior. The model already has a strong prior — we'll proceed on metadata alone.";
+
+// Camera-denied recovery: re-request access, or guidance when it's hard-blocked.
+export const CAMERA_RETRY_BUTTON = "Try camera again";
+export const CAMERA_BLOCKED_HINT =
+  "Nothing happened? Your browser has the camera blocked for this site. Enable it from the address-bar permissions, then retry.";
+
+// --- Live face-tracking copy (see faceTracking.ts) -------------------------
+
+// Shown after the camera opens while we wait for a real, well-framed face.
+// The scan does not begin counting until lock is acquired.
+export const ACQUIRING_PROMPT = "Center your face in the reticle to acquire lock.";
+
+// Mid-scan interrupt: the scan freezes and one of these is shown, keyed by the
+// reason the subject broke frame. Same clinical, faintly accusatory voice.
+export const TRACKING_ALERT: Record<TrackingReason, string> = {
+  ok: "",
+  "no-face": "Subject lost. Present your face to the sensor.",
+  "too-small": "Insufficient facial area. Move closer.",
+  "too-close": "Too close to the sensor. Ease back.",
+  "off-center": "Subject off-axis. Center your face in the reticle.",
+  "cut-off": "Face partially out of frame. Reposition.",
+  "looking-away": "Gaze deviation detected. Eyes forward — looking away will not help.",
+};
+
+// Banner headline while paused, and the line shown the instant lock returns.
+export const TRACKING_PAUSED = "Analysis paused — lock lost.";
+export const TRACKING_RESUME = "Lock re-acquired. Resuming analysis…";
+
+// Hard abort after a sustained loss of lock, plus the restart affordance.
+export const TRACKING_ABORT =
+  "Scan aborted: subject broke frame for too long. Recalibration required.";
+export const TRACKING_RESTART_BUTTON = "Re-initiate detection";
+
+// Non-blocking note when the on-device model can't load — we fall back to the
+// old metadata-only scan rather than failing outright.
+export const MODEL_LOAD_FAILED =
+  "On-device model unavailable. Proceeding on metadata alone.";
