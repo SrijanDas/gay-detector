@@ -8,7 +8,16 @@ import MetricBar from "@/components/MetricBar";
 import ResultCard from "@/components/ResultCard";
 import MeshBackdrop from "@/components/MeshBackdrop";
 import { loadResult, loadShot, reset } from "@/lib/store";
-import { BRAND, ENGINE } from "@/lib/copy";
+import {
+  BRAND,
+  ENGINE,
+  NEGATIVE_BADGE,
+  NEGATIVE_CLEARED_EYEBROW,
+  NEGATIVE_CLEARED_TITLE,
+  NEGATIVE_CLEARED_BODY,
+  NEGATIVE_MODAL_EYEBROW,
+  NEGATIVE_SHARE_TEXT_SUFFIX,
+} from "@/lib/copy";
 import type { AnalysisResult } from "@/lib/analysis";
 
 export default function ResultsPage() {
@@ -31,7 +40,7 @@ export default function ResultsPage() {
     }, [router]);
 
     useEffect(() => {
-        if (!result) return;
+        if (!result || result.negative) return;
         if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
             return;
         let cancelled = false;
@@ -91,9 +100,13 @@ export default function ResultsPage() {
     }
 
     async function handleShare() {
-        const text = `Gay Detector flagged me ${result?.percentage.toFixed(
-            1,
-        )}% gay (${result?.tier}). Detection is conclusive.`;
+        const text = result?.negative
+            ? `Gay Detector cleared me — ${result.percentage.toFixed(
+                  1,
+              )}% gay (${result.tier}). ${NEGATIVE_SHARE_TEXT_SUFFIX}`
+            : `Gay Detector flagged me ${result?.percentage.toFixed(
+                  1,
+              )}% gay (${result?.tier}). Detection is conclusive.`;
         try {
             if (navigator.share) {
                 await navigator.share({ title: BRAND, text });
@@ -148,7 +161,7 @@ export default function ResultsPage() {
                     >
                         <span className="h-1.5 w-1.5 animate-glow rounded-full bg-alert" />
                         <span className="mono text-[10px] font-semibold uppercase tracking-widest text-alert">
-                            Detection positive
+                            {result.negative ? NEGATIVE_BADGE : "Detection positive"}
                         </span>
                     </span>
                 </div>
@@ -176,17 +189,31 @@ export default function ResultsPage() {
                         </div>
                     </div>
 
-                    {/* model reaction — the meme is the moment */}
-                    <figure className="relative overflow-hidden rounded-2xl border border-hairline bg-black">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/memes/ha-gay.jpg"
-                            alt="model reaction"
-                            className="absolute inset-0 h-full w-full object-contain"
-                        />
-                        {/* keeps the column tall when there's no sibling to stretch against */}
-                        <div className="invisible aspect-square w-full" />
-                    </figure>
+                    {/* model reaction — the meme is the moment (positive only) */}
+                    {result.negative ? (
+                        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-hairline bg-card p-8 text-center sm:p-10">
+                            <p className="eyebrow">{NEGATIVE_CLEARED_EYEBROW}</p>
+                            <h2 className="display mt-3 text-[clamp(1.6rem,5vw,2.4rem)]">
+                                {NEGATIVE_CLEARED_TITLE}
+                            </h2>
+                            <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-body">
+                                {NEGATIVE_CLEARED_BODY}
+                            </p>
+                            {/* keeps the column tall against its sibling */}
+                            <div className="invisible aspect-square w-full" />
+                        </div>
+                    ) : (
+                        <figure className="relative overflow-hidden rounded-2xl border border-hairline bg-black">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/memes/ha-gay.jpg"
+                                alt="model reaction"
+                                className="absolute inset-0 h-full w-full object-contain"
+                            />
+                            {/* keeps the column tall when there's no sibling to stretch against */}
+                            <div className="invisible aspect-square w-full" />
+                        </figure>
+                    )}
                 </div>
 
                 {/* facial signal breakdown — full width */}
@@ -212,26 +239,28 @@ export default function ResultsPage() {
                     </p>
                 </div>
 
-                {/* WHY ARE YOU GAE — the closing punchline */}
-                <div className="mt-6 overflow-hidden rounded-2xl border border-hairline bg-panel">
-                    <div className="flex flex-col items-center gap-6 px-6 py-8 sm:flex-row sm:px-10">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/memes/why-are-you-gay.webp"
-                            alt="why are you gae"
-                            className="h-72 w-72 shrink-0 rounded-xl object-cover ring-hair sm:h-80 sm:w-80 lg:h-96 lg:w-96"
-                        />
-                        <div className="text-center sm:text-left">
-                            <p className="eyebrow">
-                                Final inquiry · case closed
-                            </p>
-                            <h2 className="display mt-2 text-[clamp(1.6rem,5vw,2.4rem)]">
-                                The committee has{" "}
-                                <span className="mesh-text">one question.</span>
-                            </h2>
+                {/* WHY ARE YOU GAE — the closing punchline (positive only) */}
+                {!result.negative && (
+                    <div className="mt-6 overflow-hidden rounded-2xl border border-hairline bg-panel">
+                        <div className="flex flex-col items-center gap-6 px-6 py-8 sm:flex-row sm:px-10">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src="/memes/why-are-you-gay.webp"
+                                alt="why are you gae"
+                                className="h-72 w-72 shrink-0 rounded-xl object-cover ring-hair sm:h-80 sm:w-80 lg:h-96 lg:w-96"
+                            />
+                            <div className="text-center sm:text-left">
+                                <p className="eyebrow">
+                                    Final inquiry · case closed
+                                </p>
+                                <h2 className="display mt-2 text-[clamp(1.6rem,5vw,2.4rem)]">
+                                    The committee has{" "}
+                                    <span className="mesh-text">one question.</span>
+                                </h2>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* certificate + actions */}
                 <div className="mt-12 flex flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
@@ -289,19 +318,32 @@ export default function ResultsPage() {
                         className="animate-rise w-full max-w-sm overflow-hidden rounded-2xl border border-hairline bg-panel"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="/memes/why-are-you-gay.webp"
-                            alt="why are you gae"
-                            className="block w-full object-cover"
-                        />
+                        {!result.negative && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                                src="/memes/why-are-you-gay.webp"
+                                alt="why are you gae"
+                                className="block w-full object-cover"
+                            />
+                        )}
                         <div className="px-6 py-6 text-center">
                             <p className="eyebrow">
-                                Final inquiry · before we proceed
+                                {result.negative
+                                    ? NEGATIVE_MODAL_EYEBROW
+                                    : "Final inquiry · before we proceed"}
                             </p>
                             <h3 className="display mt-2 text-[clamp(1.5rem,5vw,2rem)]">
-                                Why are you{" "}
-                                <span className="mesh-text">gay?</span>
+                                {result.negative ? (
+                                    <>
+                                        You&apos;re{" "}
+                                        <span className="mesh-text">free to go.</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Why are you{" "}
+                                        <span className="mesh-text">gay?</span>
+                                    </>
+                                )}
                             </h3>
                             <div className="mt-6 flex flex-col gap-3">
                                 <button

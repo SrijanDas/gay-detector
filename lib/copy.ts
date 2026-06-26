@@ -96,6 +96,53 @@ export const BLURB_CLOSERS: string[] = [
 // whitespace. Everything else is a denial — see below.
 export const ACCESS_CODE = "GAYDAR-7";
 
+// Easter egg: the "calibration override" code. Grants access just like the
+// real code, but flips the engine into a negative pass — the one path where
+// the detector clears you. Same normalization rules (case/whitespace).
+export const SECRET_NEGATIVE_CODE = "GAYDER-7";
+
+// Negative-pass headline tiers, keyed by the (low) "% gay" reading. Same
+// deadpan voice as TIERS, but the verdict goes the other way for once.
+export const NEGATIVE_TIERS: Tier[] = [
+  {
+    min: 0,
+    tier: "Negative · Conclusive",
+    verdict: "The classifier found nothing to flag. This is rare. Frame it.",
+  },
+  {
+    min: 10,
+    tier: "Negative · Trace Signal",
+    verdict: "A faint signal was logged, then dismissed as a lighting artifact.",
+  },
+  {
+    min: 22,
+    tier: "Negative · Borderline",
+    verdict: "Cleared, but the model has asked to keep your file open.",
+  },
+];
+
+export const NEGATIVE_BLURB_BODIES: string[] = [
+  "the system returned a negative classification with high confidence.",
+  "every detection pass came back clean, which the model noted as unusual.",
+  "the jawline and ocular vectors declined to incriminate you.",
+];
+
+export const NEGATIVE_BLURB_CLOSERS: string[] = [
+  "The finding is logged and, for once, exculpatory. You may go.",
+  "No flag was raised. The committee is mildly disappointed.",
+  "Detection complete. The dataset will have to do without you.",
+];
+
+// Negative-pass result-page copy (mirrors the positive punchlines).
+export const NEGATIVE_BADGE = "Detection negative";
+export const NEGATIVE_CLEARED_EYEBROW = "Model reaction · no flag raised";
+export const NEGATIVE_CLEARED_TITLE = "The committee has nothing to ask.";
+export const NEGATIVE_CLEARED_BODY =
+  "478 landmarks, three passes, zero hits. The detector ran out of things to say and simply cleared the bay.";
+export const NEGATIVE_MODAL_EYEBROW = "Case dismissed · before we proceed";
+export const NEGATIVE_CERT_TITLE = "CERTIFIED NOT GAY";
+export const NEGATIVE_SHARE_TEXT_SUFFIX = "Detection was negative. Cleared.";
+
 // Shown for a beat when the correct code is entered, just before the scanner.
 export const ACCESS_GRANTED = "Access code accepted. Detection bay is ready.";
 

@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { BRAND, MODEL_VERSION } from "@/lib/copy";
+import { BRAND, MODEL_VERSION, NEGATIVE_CERT_TITLE } from "@/lib/copy";
 import type { AnalysisResult } from "@/lib/analysis";
 
 /*
@@ -46,7 +46,9 @@ const ResultCard = forwardRef<
         <div className="mt-6 flex justify-center">
           <div className="mesh-bg flex h-16 w-16 items-center justify-center rounded-full">
             <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-night">
-              <span className="text-[24px] font-bold leading-none">✓</span>
+              <span className="text-[24px] font-bold leading-none">
+                {result.negative ? "✕" : "✓"}
+              </span>
             </div>
           </div>
         </div>
@@ -66,7 +68,7 @@ const ResultCard = forwardRef<
             className="mt-2 text-[34px] font-bold leading-none tracking-tight"
             style={{ letterSpacing: "-0.02em" }}
           >
-            CERTIFIED GAY
+            {result.negative ? NEGATIVE_CERT_TITLE : "CERTIFIED GAY"}
           </h2>
           <div className="mesh-bg mx-auto mt-3 h-[3px] w-24 rounded-full" />
         </div>

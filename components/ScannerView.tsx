@@ -9,6 +9,7 @@ import {
   SCAN_START_PROMPT,
   SCAN_START_BUTTON,
 } from "@/lib/copy";
+import { isNegativeMode } from "@/lib/store";
 import {
   generateResult,
   extractFeatures,
@@ -85,7 +86,9 @@ export default function ScannerView({
     finishedRef.current = true;
     const { shot, features } = capture();
     const seed = shot ? hashString(shot.slice(0, 4000)) : randomSeed();
-    const result = generateResult(seed, features ?? undefined);
+    const result = generateResult(seed, features ?? undefined, {
+      negative: isNegativeMode(),
+    });
     stopCamera();
     setPhase("done");
     onComplete(result, shot);

@@ -5,8 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MeshBackdrop from "@/components/MeshBackdrop";
 import TrainingMarquee from "@/components/TrainingMarquee";
-import { unlock } from "@/lib/store";
-import { BRAND, ENGINE, MODEL_VERSION, ACCESS_CODE, ACCESS_GRANTED } from "@/lib/copy";
+import { unlock, setNegativeMode } from "@/lib/store";
+import {
+  BRAND,
+  ENGINE,
+  MODEL_VERSION,
+  ACCESS_CODE,
+  SECRET_NEGATIVE_CODE,
+  ACCESS_GRANTED,
+} from "@/lib/copy";
 
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "");
 
@@ -21,18 +28,21 @@ export default function GatePage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status !== "idle") return;
-    const correct = normalize(code) === normalize(ACCESS_CODE);
+    const entered = normalize(code);
+    const correct = entered === normalize(ACCESS_CODE);
+    const secret = entered === normalize(SECRET_NEGATIVE_CODE);
 
     setStatus("verifying");
     setToast(null);
     window.setTimeout(() => {
-      if (!correct) {
+      if (!correct && !secret) {
         router.push("/access-denied");
         return;
       }
       setToast(ACCESS_GRANTED);
       setStatus("granted");
       window.setTimeout(() => {
+        setNegativeMode(secret);
         unlock();
         router.push("/scan");
       }, 1100);

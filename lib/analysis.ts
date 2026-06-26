@@ -8,10 +8,13 @@
 
 import {
   TIERS,
+  NEGATIVE_TIERS,
   METRIC_SPECS,
   BLURB_OPENERS,
   BLURB_BODIES,
   BLURB_CLOSERS,
+  NEGATIVE_BLURB_BODIES,
+  NEGATIVE_BLURB_CLOSERS,
 } from "./copy";
 
 export interface Metric {
@@ -31,13 +34,14 @@ export interface FaceFeatures {
 }
 
 export interface AnalysisResult {
-  percentage: number; // always >= FLOOR
+  percentage: number; // positive pass: >= FLOOR; negative pass: low (100 - score)
   confidence: number;
   tier: string;
   verdict: string;
   metrics: Metric[];
   blurb: string;
   seed: number;
+  negative: boolean; // true only on the GAYDER-7 calibration-override pass
 }
 
 export const FLOOR = 69; // nice.
@@ -145,9 +149,9 @@ function metricValue(feature: number, lift = 0): number {
   return Math.max(64, Math.min(99, Math.round(v)));
 }
 
-function tierFor(percentage: number) {
-  let chosen = TIERS[0];
-  for (const t of TIERS) if (percentage >= t.min) chosen = t;
+function tierFor(percentage: number, tiers = TIERS) {
+  let chosen = tiers[0];
+  for (const t of tiers) if (percentage >= t.min) chosen = t;
   return chosen;
 }
 
@@ -157,8 +161,10 @@ function tierFor(percentage: number) {
  */
 export function generateResult(
   seed: number,
-  features?: FaceFeatures
+  features?: FaceFeatures,
+  opts?: { negative?: boolean }
 ): AnalysisResult {
+  const negative = opts?.negative ?? false;
   const rng = makeRng(seed);
 
   const f: FaceFeatures = features ?? {
@@ -191,17 +197,29 @@ export function generateResult(
   const avg =
     metrics.reduce((a, m) => a + m.value, 0) / metrics.length / 100; // ~0.64–0.99
   const percentage = round1(FLOOR + avg * (CEIL - FLOOR) * 0.62 + 8);
-  const pct = Math.min(CEIL, Math.max(FLOOR, percentage));
+  const positivePct = Math.min(CEIL, Math.max(FLOOR, percentage));
+  // Negative pass: the same face, read as its complement — a flatteringly
+  // low "% gay" that still tracks the captured features.
+  const pct = negative ? round1(100 - positivePct) : positivePct;
 
   const confidence = round1(97 + (f.contrast * 0.5 + f.symmetry * 0.5) * 2.9);
 
-  const { tier, verdict } = tierFor(pct);
+  const { tier, verdict } = tierFor(pct, negative ? NEGATIVE_TIERS : TIERS);
   const blurb = `${pick(BLURB_OPENERS, rng())} ${pick(
-    BLURB_BODIES,
+    negative ? NEGATIVE_BLURB_BODIES : BLURB_BODIES,
     rng()
-  )} ${pick(BLURB_CLOSERS, rng())}`;
+  )} ${pick(negative ? NEGATIVE_BLURB_CLOSERS : BLURB_CLOSERS, rng())}`;
 
-  return { percentage: pct, confidence, tier, verdict, metrics, blurb, seed };
+  return {
+    percentage: pct,
+    confidence,
+    tier,
+    verdict,
+    metrics,
+    blurb,
+    seed,
+    negative,
+  };
 }
 
 /** Convenience: a fresh random seed when there's no image. */

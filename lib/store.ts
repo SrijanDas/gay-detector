@@ -8,6 +8,7 @@ import type { AnalysisResult } from "./analysis";
 const GATE_KEY = "spectrum.unlocked";
 const RESULT_KEY = "spectrum.result";
 const SHOT_KEY = "spectrum.shot"; // captured frame as a data URL (optional)
+const MODE_KEY = "spectrum.negative"; // GAYDER-7 override → negative pass
 
 function safe(): Storage | null {
   try {
@@ -23,6 +24,17 @@ export function unlock(): void {
 
 export function isUnlocked(): boolean {
   return safe()?.getItem(GATE_KEY) === "1";
+}
+
+export function setNegativeMode(on: boolean): void {
+  const s = safe();
+  if (!s) return;
+  if (on) s.setItem(MODE_KEY, "1");
+  else s.removeItem(MODE_KEY);
+}
+
+export function isNegativeMode(): boolean {
+  return safe()?.getItem(MODE_KEY) === "1";
 }
 
 export function saveResult(result: AnalysisResult, shot?: string | null): void {
