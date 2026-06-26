@@ -20,7 +20,7 @@ import {
 
 type Phase = "idle" | "requesting" | "scanning" | "denied" | "done";
 
-const SCAN_MS = 5600;
+const SCAN_MS = 12000;
 
 export default function ScannerView({
   onComplete,
