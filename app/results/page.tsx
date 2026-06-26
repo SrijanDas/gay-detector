@@ -162,8 +162,14 @@ export default function ResultsPage() {
                             <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-body">
                                 {NEGATIVE_CLEARED_BODY}
                             </p>
-                            {/* keeps the column tall against its sibling */}
-                            <div className="invisible aspect-square w-full" />
+                            <figure className="mt-6 overflow-hidden rounded-xl border border-hairline bg-black">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src="/memes/very-nice.jpeg"
+                                    alt="model reaction"
+                                    className="block w-full object-contain"
+                                />
+                            </figure>
                         </div>
                     ) : (
                         <figure className="relative overflow-hidden rounded-2xl border border-hairline bg-black">

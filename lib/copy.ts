@@ -111,7 +111,7 @@ export const NEGATIVE_TIERS: Tier[] = [
   {
     min: 0,
     tier: "Negative · Conclusive",
-    verdict: "The classifier found nothing to flag. This is rare. Frame it.",
+    verdict: "The classifier found nothing to flag.",
   },
   {
     min: 10,
@@ -127,20 +127,20 @@ export const NEGATIVE_TIERS: Tier[] = [
 
 export const NEGATIVE_BLURB_BODIES: string[] = [
   "the system returned a negative classification with high confidence.",
-  "every detection pass came back clean, which the model noted as unusual.",
+  "every detection pass came back clean, no caveats.",
   "the jawline and ocular vectors declined to incriminate you.",
 ];
 
 export const NEGATIVE_BLURB_CLOSERS: string[] = [
   "The finding is logged and, for once, exculpatory. You may go.",
-  "No flag was raised. The committee is mildly disappointed.",
+  "No flag was raised.",
   "Detection complete. The dataset will have to do without you.",
 ];
 
 // Negative-pass result-page copy (mirrors the positive punchlines).
 export const NEGATIVE_BADGE = "Detection negative";
 export const NEGATIVE_CLEARED_EYEBROW = "Model reaction · no flag raised";
-export const NEGATIVE_CLEARED_TITLE = "The committee has nothing to ask.";
+export const NEGATIVE_CLEARED_TITLE = "The committee has nothing to say.";
 export const NEGATIVE_CLEARED_BODY =
   "478 landmarks, three passes, zero hits. The detector ran out of things to say and simply cleared the bay.";
 export const NEGATIVE_MODAL_EYEBROW = "Case dismissed · before we proceed";
