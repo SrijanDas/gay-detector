@@ -46,6 +46,7 @@ export interface AnalysisResult {
 
 export const FLOOR = 69; // nice.
 export const CEIL = 99.9;
+export const POSITIVE_FLOOR = 75; // headline never dips below this
 
 /** mulberry32 — tiny deterministic PRNG, used for prose + fallbacks. */
 function makeRng(seed: number): () => number {
@@ -192,12 +193,16 @@ export function generateResult(
     value: byKey[s.key] ?? metricValue(rng()),
   }));
 
-  // Headline = average of the facial metrics, lifted above the FLOOR so
-  // everyone still scores high but the number tracks the actual face.
+  // Headline = average of the facial metrics, stretched across a believable
+  // 75–99.9 band so the number tracks the actual face but never reads as
+  // suspiciously pinned to the top. A small seed-based jitter keeps repeated
+  // scans from landing on identical figures.
   const avg =
     metrics.reduce((a, m) => a + m.value, 0) / metrics.length / 100; // ~0.64–0.99
-  const percentage = round1(FLOOR + avg * (CEIL - FLOOR) * 0.62 + 8);
-  const positivePct = Math.min(CEIL, Math.max(FLOOR, percentage));
+  const t = clamp01((avg - 0.64) / 0.35); // normalize the metric band to 0..1
+  const jitter = (rng() - 0.5) * 7; // ±3.5 of organic wobble
+  const percentage = round1(POSITIVE_FLOOR + t * (CEIL - POSITIVE_FLOOR) + jitter);
+  const positivePct = Math.min(CEIL, Math.max(POSITIVE_FLOOR, percentage));
   // Negative pass: the same face, read as its complement — a flatteringly
   // low "% gay" that still tracks the captured features.
   const pct = negative ? round1(100 - positivePct) : positivePct;
