@@ -94,12 +94,12 @@ export const BLURB_CLOSERS: string[] = [
 
 // The one legitimate access code. Entry is case-insensitive and ignores
 // whitespace. Everything else is a denial — see below.
-export const ACCESS_CODE = "GAYDAR-7";
+export const ACCESS_CODE = "GAYDAR7";
 
 // Easter egg: the "calibration override" code. Grants access just like the
 // real code, but flips the engine into a negative pass — the one path where
 // the detector clears you. Same normalization rules (case/whitespace).
-export const SECRET_NEGATIVE_CODE = "GAYDER-7";
+export const SECRET_NEGATIVE_CODE = "GAYDER7";
 
 // Shown inline when someone hits the button without typing anything — the
 // button is always live, so this nudges them to actually enter a code.

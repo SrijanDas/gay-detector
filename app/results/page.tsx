@@ -39,43 +39,6 @@ export default function ResultsPage() {
         setShot(loadShot());
     }, [router]);
 
-    useEffect(() => {
-        if (!result || result.negative) return;
-        if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
-            return;
-        let cancelled = false;
-        import("canvas-confetti").then(({ default: confetti }) => {
-            if (cancelled) return;
-            const colors = ["#22d3ee", "#3b82f6", "#818cf8", "#ffffff"];
-            const fire = (delay: number, opts: object) =>
-                window.setTimeout(
-                    () =>
-                        confetti({
-                            colors,
-                            disableForReducedMotion: true,
-                            ...opts,
-                        }),
-                    delay,
-                );
-            fire(400, { particleCount: 80, spread: 70, origin: { y: 0.3 } });
-            fire(700, {
-                particleCount: 40,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-            });
-            fire(700, {
-                particleCount: 40,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-            });
-        });
-        return () => {
-            cancelled = true;
-        };
-    }, [result]);
-
     async function handleDownload() {
         if (!cardRef.current || downloading) return;
         setDownloading(true);
@@ -121,7 +84,7 @@ export default function ResultsPage() {
 
     function scanAgain() {
         reset();
-        router.push("/scan");
+        router.push("/");
     }
 
     function proceed() {
