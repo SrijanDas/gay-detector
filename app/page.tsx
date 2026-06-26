@@ -13,6 +13,7 @@ import {
   ACCESS_CODE,
   SECRET_NEGATIVE_CODE,
   ACCESS_GRANTED,
+  EMPTY_CODE_ERROR,
 } from "@/lib/copy";
 
 const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "");
@@ -24,11 +25,16 @@ export default function GatePage() {
     "idle"
   );
   const [toast, setToast] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status !== "idle") return;
     const entered = normalize(code);
+    if (entered.length === 0) {
+      setError(EMPTY_CODE_ERROR);
+      return;
+    }
     const correct = entered === normalize(ACCESS_CODE);
     const secret = entered === normalize(SECRET_NEGATIVE_CODE);
 
@@ -112,7 +118,10 @@ export default function GatePage() {
               <input
                 id="code"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  if (error) setError(null);
+                }}
                 disabled={busy}
                 autoComplete="off"
                 autoCapitalize="off"
@@ -122,7 +131,7 @@ export default function GatePage() {
               />
               <button
                 type="submit"
-                disabled={busy || code.trim().length === 0}
+                disabled={busy}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-pill bg-white px-6 text-[15px] font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-30"
               >
                 {status === "verifying" ? (
@@ -137,6 +146,18 @@ export default function GatePage() {
               </button>
             </div>
           </form>
+
+          {error && (
+            <div
+              role="alert"
+              className="animate-rise mt-4 flex max-w-md items-start gap-3 rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3"
+            >
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-red-400" />
+              <p className="mono text-[13px] leading-snug text-red-200">
+                {error}
+              </p>
+            </div>
+          )}
 
           {toast && status === "granted" && (
             <div

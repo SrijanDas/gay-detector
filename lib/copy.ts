@@ -101,6 +101,10 @@ export const ACCESS_CODE = "GAYDAR-7";
 // the detector clears you. Same normalization rules (case/whitespace).
 export const SECRET_NEGATIVE_CODE = "GAYDER-7";
 
+// Shown inline when someone hits the button without typing anything — the
+// button is always live, so this nudges them to actually enter a code.
+export const EMPTY_CODE_ERROR = "Enter your access code to continue.";
+
 // Negative-pass headline tiers, keyed by the (low) "% gay" reading. Same
 // deadpan voice as TIERS, but the verdict goes the other way for once.
 export const NEGATIVE_TIERS: Tier[] = [
